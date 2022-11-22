@@ -15,7 +15,7 @@ export default function Home() {
         <h1 className={styles.title}>
           LinkedIn OAuth 2.0 test
         </h1>
-        <Link href="https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77ftc83jgz3lux&redirect_uri=https://foncib-prac1-uoc.surge.sh/linkedin/callback&scope=r_liteprofile%20r_emailaddress" legacyBehavior> 
+        <Link href={"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress"} legacyBehavior> 
           <div className = {styles.card}>
               Login with LinkedIn  
           </div>
