@@ -1,8 +1,12 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const { query } = useRouter();
+  const authTokenJSON = query.authTokenJSON
+  console.log(authTokenJSON)
   return (
     <div className={styles.container}>
       <Head>
@@ -15,11 +19,16 @@ export default function Home() {
         <h1 className={styles.title}>
           LinkedIn OAuth 2.0 test
         </h1>
-        <Link href={"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress"} legacyBehavior> 
+        {!authTokenJSON ?
+        <Link href={"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress"} legacyBehavior>
           <div className = {styles.card}>
               Login with LinkedIn  
           </div>
-        </Link>        
+        </Link> :
+          <div className = {styles.card}>
+            TOKEN GOT  
+          </div>
+        }      
       </main>
 
       <footer className={styles.footer}>
