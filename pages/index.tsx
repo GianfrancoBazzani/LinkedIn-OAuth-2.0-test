@@ -1,15 +1,19 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
+import Image from 'next/image'
+const fetch = require('sync-fetch')
 import { useRouter } from "next/router";
 
 export default function Home() {
 
   const { query } = useRouter();
 
+  let userProfile
   // Query user profile if 
   if(query.userEmailAddress){
-
+    userProfile = fetch("/api/userprofile/?userEmailAddress=" + query.userEmailAddress).json()
+    console.log(userProfile.profilePicture["displayImage~"].elements[2].identifiers[0].identifier)
   }
 
 
@@ -23,13 +27,13 @@ export default function Home() {
       <header className={styles.header}>
         <div>MyLogo</div>
         <div className={styles.loginButton}>
-          {!query.userEmailAddress?
+          {(!query.userEmailAddress)?
           <Link href={"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress%20r_liteprofile"} legacyBehavior>
             Login with LinkedIn  
           </Link>
           :
           <div>
-            Gianfranc
+            {userProfile.firstName}
           </div>
         }</div>
       </header>
@@ -44,11 +48,17 @@ export default function Home() {
             Log in with LinkedIn please
           </h2>
           :
-          <div>
-            UserCard
+          <div className={styles.userCard}>
+            <Image className={styles.userCardImage} src={userProfile.profilePicture["displayImage~"].elements[2].identifiers[0].identifier} alt="profile image" width="400" height="400"></Image>
+            <div className={styles.userCardInfo}>
+              <p>First Name: {userProfile.firstName}</p>
+              <p>Last Name: {userProfile.lastName}</p>
+              <p>Email Address: {userProfile.userEmailAddress}</p>
+              <p>OAuth2.0 Token expiration(s): {userProfile.tokenExpiration/1000}</p>
+            </div>
           </div>
         }
-        
+
     
       </main>
       <footer className={styles.footer}>
@@ -57,10 +67,3 @@ export default function Home() {
     </div>
   )
 }
-
-/*userEmailAddress: userEmailAddress,
-firstName: userProfile.localizedFirstName,
-lastName: userProfile.localizedLastName,
-pofilePicture: userProfile.profilePicture.displayImage,
-tokenExpiration: accessToken.expires_in
-*/

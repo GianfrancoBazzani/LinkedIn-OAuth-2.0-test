@@ -3,56 +3,61 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from "axios"
+import fs from "fs"
 
 type userProfile = {
     userEmailAddress: string,
     firstName: string,
     lastName: string,
-    pofilePicture: string,
+    profilePicture: string,
     tokenExpiration: number
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<userProfile | undefined | string>
 ) {
+    const userEmailAddress = req?.query.userEmailAddress
 
-    // Query userProfilefd
-    let userProfile : any
+    
+    if(userEmailAddress){
+        // read LinkedIn api token for user 
+        const tokensDBString = fs.readFileSync('auth.tokens.JSON', 'utf-8')
+        let tokensDBJSON = JSON.parse(tokensDBString)
+        let accessToken = tokensDBJSON[userEmailAddress.toString()]
 
-    await axios.get("https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))", {
-        headers: {
-            "Authorization": "Bearer " + accessToken.access_token
+        if(!accessToken){
+            res.status(400).send("Bad Request, user do not has token")
+            return
         }
-    })
-    .then((response) => {
-        console.log(response.data.profilePicture['displayImage~'].elements[0].data)
-    })
-    .catch((error) => {
-         console.log(error)
-    })
 
-    // build object to be passed to frontend
-      
-    const response: userProfile = {
-        userEmailAddress: userEmailAddress,
-        firstName: userProfile.localizedFirstName,
-        lastName: userProfile.localizedLastName,
-        pofilePicture: userProfile.profilePicture.displayImage,
-        tokenExpiration: accessToken.expires_in
+
+        // query userProfile from LinkedIn
+        let userProfile : undefined | userProfile
+
+        await axios.get("https://api.linkedin.com/v2/me?projection=(id,localizedFirstName,localizedLastName,profilePicture(displayImage~:playableStreams))", {
+            headers: {
+                "Authorization": "Bearer " + accessToken.access_token
+            }
+        })
+        .then((response) => {            
+            userProfile = {
+                userEmailAddress: userEmailAddress.toString(),
+                firstName: response.data.localizedFirstName,
+                lastName: response.data.localizedLastName,
+                profilePicture: response.data.profilePicture,
+                tokenExpiration: accessToken.timestamp + accessToken.expires_in - Date.now()
+            }
+            
+        })
+        .catch((error) => {
+             console.log(error)
+        })
+    
+        // return user profile json
+        res.status(200).json(userProfile)
+        return
     }
 
-    // fromat response JSON to Query string
-    let formatedJSONFieldsArray = JSON.stringify(response).slice(1,-1).replaceAll("\"","").split(",").map((item) => item.replace(":","="))
-    let formatedQueryString = formatedJSONFieldsArray[0]
-    console.log(formatedJSONFieldsArray)
-    for (let i = 1; i<formatedJSONFieldsArray.length; i++){
-        console.log(formatedJSONFieldsArray[i])
-        formatedQueryString = formatedQueryString.concat("&" + formatedJSONFieldsArray[i])
-        
-    } 
-
-  
-
-  //res.status(200).json({ name: 'John Doe' })
+    res.status(400).send("Bad Request, no user address")
 }
