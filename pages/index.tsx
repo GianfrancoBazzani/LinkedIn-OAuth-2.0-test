@@ -12,8 +12,11 @@ export default function Home() {
   let userProfile
   // Query user profile if 
   if(query.userEmailAddress){
+
     userProfile = fetch("/api/userprofile/?userEmailAddress=" + query.userEmailAddress).json()
-    console.log(userProfile.profilePicture["displayImage~"].elements[2].identifiers[0].identifier)
+    if(userProfile.error){
+      throw userProfile.error
+    }
   }
 
 

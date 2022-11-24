@@ -15,7 +15,7 @@ type userProfile = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<userProfile | undefined | string>
+  res: NextApiResponse<userProfile | undefined | string | any>
 ) {
     const userEmailAddress = req?.query.userEmailAddress
 
@@ -30,7 +30,12 @@ export default async function handler(
             res.status(400).send("Bad Request, user do not has token")
             return
         }
-
+        
+       
+       if(Date.now() > (accessToken.timestamp + accessToken.expires_in)){
+            res.status(400).json({'error' : 'Token expired'})
+            return
+        }
 
         // query userProfile from LinkedIn
         let userProfile : undefined | userProfile
@@ -51,7 +56,7 @@ export default async function handler(
             
         })
         .catch((error) => {
-             console.log(error)
+            console.log(error)
         })
     
         // return user profile json
