@@ -27,7 +27,7 @@ export default async function handler(
         let accessToken = tokensDBJSON[userEmailAddress.toString()]
 
         if(!accessToken){
-            res.json({'error' : 'User do not has token'})
+            res.json({'error' : 'User does not have token'})
             return
         }
         
