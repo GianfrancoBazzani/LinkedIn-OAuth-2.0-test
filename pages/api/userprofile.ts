@@ -27,7 +27,7 @@ export default async function handler(
         let accessToken = tokensDBJSON[userEmailAddress.toString()]
 
         if(!accessToken){
-            res.status(400).send("Bad Request, user do not has token")
+            res.json({'error' : 'User do not has token'})
             return
         }
         
@@ -56,7 +56,7 @@ export default async function handler(
             
         })
         .catch((error) => {
-            res.status(400).json(error)
+            res.json({'error' : 'Token is invalid'})
             return
         })
     

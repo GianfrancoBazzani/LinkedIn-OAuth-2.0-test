@@ -14,12 +14,7 @@ export default function Home() {
   if(query.userEmailAddress){
 
     userProfile = fetch("/api/userprofile/?userEmailAddress=" + query.userEmailAddress).json()
-    if(userProfile.code == "ERR_BAD_REQUEST"){
-      throw userProfile
-    }
-    if(userProfile.error){
-      throw userProfile.error
-    }
+
   }
 
 
@@ -55,6 +50,9 @@ export default function Home() {
           </h2>
           :
           <div>
+            {userProfile.error?
+            <h1>Error : {userProfile.error}</h1>
+            :
             <div className={styles.userCard}>
               <Image className={styles.userCardImage} src={userProfile.profilePicture["displayImage~"].elements[2].identifiers[0].identifier} alt="profile image" width="400" height="400"></Image>
               <div className={styles.userCardInfo}>
@@ -64,6 +62,7 @@ export default function Home() {
                 <p>OAuth2.0 Token expiration(s): {userProfile.tokenExpiration/1000}</p>
               </div>
             </div>
+            }
             <div>
               {/*TODO POST TEXTBOX AND  API ENDPOINT TO POST MSG*/}
               
