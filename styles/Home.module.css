@@ -175,18 +175,24 @@
   margin-left: 20px;
   font-size: 2rem;
 }
-  
+
+.userCardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}  
 .postBox{
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+  width: 85%;
 }
 
 .postTextBox{
   margin-right: 10px;
-  width: 50%;
+  width: 200%;
 }
 
 .postBoxTitle {

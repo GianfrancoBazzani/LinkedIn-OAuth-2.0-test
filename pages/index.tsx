@@ -5,6 +5,7 @@ import Image from 'next/image'
 const fetch = require('sync-fetch')
 import { useRouter } from "next/router";
 import React from 'react'
+import { StyleRegistry } from 'styled-jsx'
 
 
 export default function Home() {
@@ -51,26 +52,28 @@ export default function Home() {
             {userProfile.error?
             <h1>Error : {userProfile.error}</h1>
             :
-            <div className={styles.userCard}>
-              <Image className={styles.userCardImage} src={userProfile.profilePicture["displayImage~"].elements[2].identifiers[0].identifier} alt="profile image" width="400" height="400"></Image>
-              <div className={styles.userCardInfo}>
-                <p>First Name: {userProfile.firstName}</p>
-                <p>Last Name: {userProfile.lastName}</p>
-                <p>Email Address: {userProfile.userEmailAddress}</p>
-                <p>OAuth2.0 Token expiration(s): {userProfile.tokenExpiration/1000}</p>
+            <div className={styles.userCardContainer}>
+              <div className={styles.userCard}>
+                <Image className={styles.userCardImage} src={userProfile.profilePicture["displayImage~"].elements[2].identifiers[0].identifier} alt="profile image" width="400" height="400"></Image>
+                <div className={styles.userCardInfo}>
+                  <p>First Name: {userProfile.firstName}</p>
+                  <p>Last Name: {userProfile.lastName}</p>
+                  <p>Email Address: {userProfile.userEmailAddress}</p>
+                  <p>OAuth2.0 Token expiration(s): {userProfile.tokenExpiration/1000}</p>
+                </div>
               </div>
+              <h3 className={styles.postBoxTitle}> Post Something on your profile </h3>
+              <form className={styles.postBox} onSubmit={
+                (event: React.SyntheticEvent<HTMLFormElement>) => {
+                  event.preventDefault();
+                  fetch("/api/post/?post=" + event.currentTarget.post.value + "&userEmailAddress=" + query.userEmailAddress + "&IDLinkedIn=" + userProfile.IDLinkedIn)
+                }
+              }>
+                <input className={styles.postTextBox} name="post"></input>
+                <button type="submit"> Post </button>
+              </form>
             </div>
             }
-            <h3 className={styles.postBoxTitle}> Post Something on your profile </h3>
-            <form className={styles.postBox} onSubmit={
-              (event: React.SyntheticEvent<HTMLFormElement>) => {
-                event.preventDefault();
-                fetch("/api/post/?post=" + event.currentTarget.post.value + "&userEmailAddress=" + query.userEmailAddress + "&IDLinkedIn=" + userProfile.IDLinkedIn)
-              }
-            }>
-              <input className={styles.postTextBox} name="post"></input>
-              <button type="submit"> Post </button>
-            </form>
           </div>
         }
 
