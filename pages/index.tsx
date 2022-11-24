@@ -4,15 +4,14 @@ import styles from '../styles/Home.module.css'
 import Image from 'next/image'
 const fetch = require('sync-fetch')
 import { useRouter } from "next/router";
+import React from 'react'
+
 
 export default function Home() {
-
+  // Query management
   const { query } = useRouter();
-
-  let userProfile
-  // Query user profile if 
+  let userProfile : any
   if(query.userEmailAddress){
-
     userProfile = fetch("/api/userprofile/?userEmailAddress=" + query.userEmailAddress).json()
   }
 
@@ -28,7 +27,7 @@ export default function Home() {
         <div>MyLogo</div>
         <div className={styles.loginButton}>
           {(!query.userEmailAddress)?
-          <Link href={"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress%20r_liteprofile"} legacyBehavior>
+          <Link href={"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress%20r_liteprofile%20w_member_social"} legacyBehavior>
             Login with LinkedIn  
           </Link>
           :
@@ -48,7 +47,7 @@ export default function Home() {
             Log in with LinkedIn please
           </h2>
           :
-          <div>
+          <div className={styles.userCardContainer}>
             {userProfile.error?
             <h1>Error : {userProfile.error}</h1>
             :
@@ -62,10 +61,16 @@ export default function Home() {
               </div>
             </div>
             }
-            <div>
-              {/*TODO POST TEXTBOX AND  API ENDPOINT TO POST MSG*/}
-              
-            </div>
+            <h3 className={styles.postBoxTitle}> Post Something on your profile </h3>
+            <form className={styles.postBox} onSubmit={
+              (event: React.SyntheticEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                fetch("/api/post/?post=" + event.currentTarget.post.value + "&userEmailAddress=" + query.userEmailAddress + "&IDLinkedIn=" + userProfile.IDLinkedIn)
+              }
+            }>
+              <input className={styles.postTextBox} name="post"></input>
+              <button type="submit"> Post </button>
+            </form>
           </div>
         }
 

@@ -27,7 +27,7 @@ export default async function handler(
             let accessToken: accessToken = { access_token: "", expires_in: 0, timestamp: 0, scope: "" }
 
             await axios.post("https://www.linkedin.com/oauth/v2/accessToken",
-                "grant_type=authorization_code&code=" + code + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress%20r_liteprofile&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&client_secret=" + process.env.LINKEDIN_CLIENT_SECRET)
+                "grant_type=authorization_code&code=" + code + "&redirect_uri=http://localhost:3000/api/linkedin/callback&scope=r_emailaddress%20r_liteprofile%20w_member_social&client_id=" + process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID + "&client_secret=" + process.env.LINKEDIN_CLIENT_SECRET)
                 .then((response) => {
                     accessToken = response.data
                     accessToken.timestamp = Date.now()

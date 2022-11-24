@@ -146,6 +146,11 @@
   border-color: #0070f3;
 }
 
+.userCardContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .userCard {
   margin: 0;
   display: flex;
@@ -162,7 +167,7 @@
   border-radius: 25px ; 
 }
 
-.userCardInfo{
+.userCardInfo {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -171,6 +176,23 @@
   font-size: 2rem;
 }
   
+.postBox{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.postTextBox{
+  margin-right: 10px;
+  width: 50%;
+}
+
+.postBoxTitle {
+  display: flex;
+  align-self: center;
+}
 
 @media (max-width: 600px) {
   .grid {
