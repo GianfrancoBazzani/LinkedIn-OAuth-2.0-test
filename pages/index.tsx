@@ -60,7 +60,7 @@ export default function Home() {
             </div>
             <div>
               {/*TODO POST TEXTBOX AND  API ENDPOINT TO POST MSG*/}
-              <p>Post something in your feed</p>
+              
             </div>
           </div>
         }
