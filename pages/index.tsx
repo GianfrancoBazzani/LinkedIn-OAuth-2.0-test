@@ -14,6 +14,9 @@ export default function Home() {
   if(query.userEmailAddress){
 
     userProfile = fetch("/api/userprofile/?userEmailAddress=" + query.userEmailAddress).json()
+    if(userProfile.code == "ERR_BAD_REQUEST"){
+      throw userProfile
+    }
     if(userProfile.error){
       throw userProfile.error
     }

@@ -33,7 +33,7 @@ export default async function handler(
         
        
        if(Date.now() > (accessToken.timestamp + accessToken.expires_in)){
-            res.status(400).json({'error' : 'Token expired'})
+            res.json({'error' : 'Token expired'})
             return
         }
 
@@ -56,7 +56,8 @@ export default async function handler(
             
         })
         .catch((error) => {
-            console.log(error)
+            res.status(400).json(error)
+            return
         })
     
         // return user profile json
