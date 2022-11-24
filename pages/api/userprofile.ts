@@ -6,6 +6,7 @@ import axios from "axios"
 import fs from "fs"
 
 type userProfile = {
+    IDLinkedIn : string,
     userEmailAddress: string,
     firstName: string,
     lastName: string,
@@ -45,8 +46,9 @@ export default async function handler(
                 "Authorization": "Bearer " + accessToken.access_token
             }
         })
-        .then((response) => {            
+        .then((response) => {          
             userProfile = {
+                IDLinkedIn: response.data.id,
                 userEmailAddress: userEmailAddress.toString(),
                 firstName: response.data.localizedFirstName,
                 lastName: response.data.localizedLastName,

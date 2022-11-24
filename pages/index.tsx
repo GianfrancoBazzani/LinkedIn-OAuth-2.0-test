@@ -14,7 +14,6 @@ export default function Home() {
   if(query.userEmailAddress){
 
     userProfile = fetch("/api/userprofile/?userEmailAddress=" + query.userEmailAddress).json()
-
   }
 
 
