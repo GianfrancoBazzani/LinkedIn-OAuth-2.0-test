@@ -18,7 +18,7 @@ export default async function handler(
     let tokensDBJSON = JSON.parse(tokensDBString)
     let accessToken = tokensDBJSON[userEmailAddress.toString()]
     
-    // define post object
+    // define HTTP post data
     let HTTPPostData = {
         "author": "urn:li:person:" + IDLinkedIn,
         "lifecycleState": "PUBLISHED",
@@ -35,7 +35,7 @@ export default async function handler(
         }
     }
 
-    
+    // post HTTP post data
     await axios.post("https://api.linkedin.com/v2/ugcPosts", HTTPPostData ,{
             headers: {
                 "Authorization": "Bearer " + accessToken.access_token
@@ -46,12 +46,9 @@ export default async function handler(
             return
         })
         .catch((error) => {
-            console.log(error)
+            res.json({'error' : 'LinkedIn api error'})
+            return
         })
-
-    res.status(200).json({})
-    return
-
   } else {
     res.json({'error' : 'No post parameter'})
     return
